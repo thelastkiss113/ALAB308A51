@@ -1,136 +1,110 @@
-const textElement = document.getElementById("text"); // 1. Cache at least one element using selectElementById.
-const optionButtonsElement = document.querySelector("#option-buttons"); // 1. Cache at least one element using querySelector or querySelectorAll.
-const playerForm = document.getElementById("player-form"); // form for player's name - Include at least one form and/or input with HTML attribute validation.
-const playerNameInput = document.querySelector("#player-name"); // grab player's name and store local storage.
-const resetButton = document.getElementById("reset-game"); // reset the game.
+import { createStars } from './stars.js';
+import { textNodes } from './data.js';
 
-let state = {}; //current state of the game
+let state = {}; // Current state of the game
 let playerName = "";
-let typingSpeed = 50; // Speed of the typewriter effect.
+let typingSpeed = 50; // Speed of the typewriter effect
+const textElement = document.getElementById("text"); // Cached element for displaying text
+const optionButtonsElement = document.querySelector("#option-buttons"); // Cached element for option buttons
+const resetButton = document.getElementById("reset-game"); // Cached reset button
 
-// 1. cache -- textElement, playerForm, playerNameInput, resetButton = by getElementById.
-// 2. querySelector('#option-buttons') & querySelector('#player-name') = Cache at least one element using querySelector or querySelectorAll.
-
-// Show the form initially, then start the game once the form is submitted.
-playerForm.addEventListener("submit", (event) => {
-  // 11. Register at least two different event listeners and create the associated event handler functions.
-  event.preventDefault();
-
-  // 14. Include DOM event-based validation.
-  // Get the player's name and store it in localStorage.
-  playerName = playerNameInput.value;
-  localStorage.setItem("playerName", playerName);
-
-  // Hide the form and show the game UI.
-  // 9. Modify the style or CSS classes of an element:
-  playerForm.style.display = "none";
-  textElement.style.display = "block";
-  optionButtonsElement.style.display = "grid"; // Show the option buttons only after the name is submitted.
-
-  startGame(); // Start the game.
+// Initialize the game and UI on page load
+document.addEventListener('DOMContentLoaded', () => {
+    createStars(50); // Create stars for background
+    loadPlayerName(); // Load the player's name from localStorage
+    resetButton.addEventListener("click", startGame); // Event listener for the reset button
 });
 
+// Load player's name from localStorage if previously saved
+function loadPlayerName() {
+    const savedName = localStorage.getItem("playerName");
+    if (savedName) {
+        playerName = savedName;
+        document.querySelector("#player-name").value = savedName; // Set input value to saved name
+    }
+}
+
+// Start the game
 function startGame() {
-  state = {}; // Reset game state.
-  showTextNode(1);
-  resetButton.style.display = "none"; // Hide the reset button initially.
+    state = {}; // Reset game state
+    showTextNode(1); // Show the first text node
+    resetButton.style.display = "none"; // Hide the reset button initially
 }
 
-// Create a typewriter effect for text.
+// Create a typewriter effect for text
 function typeWriter(text, i = 0) {
-  if (i < text.length) {
-    textElement.innerHTML += text.charAt(i); // Add one character at a time.
-    setTimeout(() => typeWriter(text, i + 1), typingSpeed); // Set delay based on typingSpeed.
-  } else {
-    enableOptionButtons(); // Once typing is done, show the buttons.
-  }
+    if (i < text.length) {
+        textElement.innerHTML += text.charAt(i); // Add one character at a time
+        setTimeout(() => typeWriter(text, i + 1), typingSpeed); // Set delay based on typingSpeed
+    } else {
+        enableOptionButtons(); // Once typing is done, show the buttons
+    }
 }
 
-// Modify the textNode rendering to include typewriter effect.
+// Modify the textNode rendering to include typewriter effect
 function showTextNode(textNodeIndex) {
-  const textNode = textNodes.find((textNode) => textNode.id === textNodeIndex);
-  const formattedText = textNode.text.replace("{playerName}", playerName); // Use player's name.
+    const textNode = textNodes.find((textNode) => textNode.id === textNodeIndex);
+    const formattedText = textNode.text.replace("{playerName}", playerName); // Use player's name
 
-  textElement.innerHTML = ""; // Clear the previous text.
-  disableOptionButtons(); // Disable buttons until text finishes typing.
+    textElement.innerHTML = ""; // Clear the previous text
+    disableOptionButtons(); // Disable buttons until text finishes typing
 
-  typeWriter(formattedText); // Start typing the text.
+    typeWriter(formattedText); // Start typing the text
 
-  // Clear old options while the text is being typed.
-  while (optionButtonsElement.firstChild) {
-    optionButtonsElement.removeChild(optionButtonsElement.firstChild);
-  }
-
-  // Use the DocumentFragment interface.
-  const fragment = document.createDocumentFragment();
-
-  // Iterate over the options array of the current textNode and create buttons.
-  textNode.options.forEach((option) => {
-    if (showOption(option)) {
-      const button = document.createElement("button"); // 5. Create at least one element using createElement.
-      button.innerText = option.text;
-      button.classList.add("btn");
-      button.addEventListener("click", () => selectOption(option)); // Add event listener to the button.
-
-      // Disable button after it’s clicked.
-      button.setAttribute("data-selected", "false");
-      button.addEventListener("click", () => button.setAttribute("data-selected", "true"));
-
-      fragment.appendChild(button); // Append buttons to fragment.
+    // Clear old options while the text is being typed
+    while (optionButtonsElement.firstChild) {
+        optionButtonsElement.removeChild(optionButtonsElement.firstChild);
     }
-  });
 
-  optionButtonsElement.appendChild(fragment); // Append the button fragment to the DOM.
+    const fragment = document.createDocumentFragment(); // Create a DocumentFragment
+
+    // Iterate over the options array of the current textNode and create buttons
+    textNode.options.forEach((option) => {
+        if (showOption(option)) {
+            const button = document.createElement("button"); // Create a button for the option
+            button.innerText = option.text;
+            button.classList.add("btn");
+            button.addEventListener("click", () => selectOption(option)); // Add event listener to the button
+
+            // Disable button after it’s clicked
+            button.setAttribute("data-selected", "false");
+            button.addEventListener("click", () => button.setAttribute("data-selected", "true"));
+
+            fragment.appendChild(button); // Append buttons to fragment
+        }
+    });
+
+    optionButtonsElement.appendChild(fragment); // Append the button fragment to the DOM
 }
 
+// Disable option buttons during typing
 function disableOptionButtons() {
-  optionButtonsElement.style.display = "none"; // Hide buttons during typing.
+    optionButtonsElement.style.display = "none"; // Hide buttons during typing
 }
 
+// Enable option buttons after typing is done
 function enableOptionButtons() {
-  optionButtonsElement.style.display = "block"; // Show buttons once text is typed.
+    optionButtonsElement.style.display = "block"; // Show buttons once text is typed
 }
 
+// Determine if the option should be shown based on game state
 function showOption(option) {
-  return option.requiredState == null || option.requiredState(state);
+    return option.requiredState == null || option.requiredState(state);
 }
 
+// Handle option selection and navigate to the next text node
 function selectOption(option) {
-  const nextTextNodeId = option.nextText;
-  if (nextTextNodeId <= 0) {
-    return endGame(); // Call the endGame function to handle restart.
-  }
-  state = Object.assign(state, option.setState); // Merge state.
-  showTextNode(nextTextNodeId);
-}
-
-function endGame() {
-  textElement.innerText = `Thank you for playing, ${playerName}! Would you like to play again?`;
-  resetButton.style.display = "block"; // Show reset button to restart.
-  resetButton.addEventListener("click", startGame);
-  alert("Game over!"); // BOM method to show an alert when the game ends.
-}
-
-
-// Load player's name from localStorage BOM if previously saved.
-window.addEventListener("load", () => {
-  const savedName = localStorage.getItem("playerName");
-  if (savedName) {
-    playerName = savedName;
-    playerNameInput.value = savedName;
-  }
-});
-
-//* * * * Stars * * * 
-function createStars(numStars) {
-    const starContainer = document.body;
-    for (let i = 0; i < numStars; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        star.style.left = `${Math.random() * 100}vw`;
-        star.style.top = `${Math.random() * 100}vh`;
-        starContainer.appendChild(star);
+    const nextTextNodeId = option.nextText;
+    if (nextTextNodeId <= 0) {
+        return endGame(); // Call the endGame function to handle restart
     }
+    state = Object.assign(state, option.setState); // Merge state
+    showTextNode(nextTextNodeId); // Show the next text node
 }
 
-createStars(50);
+// End the game and show a message
+function endGame() {
+    textElement.innerText = `Thank you for playing, ${playerName}! Would you like to play again?`;
+    resetButton.style.display = "block"; // Show reset button to restart
+    alert("Game over!"); // Show an alert when the game ends
+}

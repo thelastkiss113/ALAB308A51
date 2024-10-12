@@ -1,0 +1,105 @@
+body {
+    color: #00FF00; 
+    background-color: black; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace; 
+}
+
+/* Retro Computer */
+.container {
+    background-color: black;
+    color: #00FF00;
+    border: 2px solid #00FF00; 
+    padding: 30px;
+    width: 90%; 
+    max-width: 800px; 
+    margin: 0 auto; 
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); 
+    z-index: 10;
+    border-radius: 10px;
+   ;
+}
+
+#option-buttons {
+    display: none;
+ 
+}
+
+/* Blinking square cursor */
+#text::after {
+    content: ''; 
+    display: inline-block;
+    width: 20px; 
+    height: 30px; 
+    background-color: #00FF00; 
+    margin-left: 5px;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; } 
+}
+
+
+/* Base style for all buttons */
+.btn {
+    background-color: black;
+    color: white; /* Options will be white */
+    border: 1px solid #00FF00;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+/* Styling for key action texts */
+.btn span.key-action {
+    color: #FFFFE0; /* Yellow-white color for key actions */
+}
+
+/* Hover effect for buttons */
+.btn:hover {
+    background-color: #00FF00;
+    color: black;
+}
+
+/* Typewriter effect */
+#text {
+    white-space: pre-wrap;
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+    max-height: 300px;
+    overflow-y: auto;
+    font-size: 30px;
+}
+
+/* Stationary stars backdrop */
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    width: 2px;
+    height: 2px;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+/* Twinkling stars */
+.twinkling-star {
+    animation: twinkle 2s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+    0%, 90% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}

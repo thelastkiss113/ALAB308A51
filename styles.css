@@ -82,24 +82,23 @@ body {
 /* Stationary stars backdrop */
 .star {
     position: absolute;
-    background: white;
+    width: 5px;
+    height: 5px;
+    background-color: #fff;
     border-radius: 50%;
-    width: 2px;
-    height: 2px;
-    opacity: 0.8;
-    z-index: 1;
-}
+    z-index: -1;
+  }
 
 /* Twinkling stars */
 .twinkling-star {
-    animation: twinkle 2s infinite ease-in-out;
+    animation: twinkle 6s infinite ease-in-out;
 }
 
 @keyframes twinkle {
     0%, 90% {
-        opacity: 0.8;
+      opacity: 0.8;
     }
     50% {
-        opacity: 0.4;
+      opacity: 0.4;
     }
-}
+  }

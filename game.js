@@ -21,11 +21,11 @@ playerForm.addEventListener("submit", (event) => {
     startGame();
 });
 
-function startGame() {
+export function startGame() {
     state = {};
     showTextNode(1);
     resetButton.style.display = "none";
-}
+  }
 function typeWriter(text, i = 0) {
     if (i < text.length) {
         textElement.innerHTML += text.charAt(i);

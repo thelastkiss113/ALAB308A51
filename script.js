@@ -14,6 +14,4 @@ window.addEventListener("load", () => {
     playerName = savedName;
     playerNameInput.value = savedName; // Set input value if a name was saved
   }
-  initUIRefs(); // Initialize UI references
-  startGame(); 
 });
